@@ -6,14 +6,13 @@ from sklearn.neighbors import KernelDensity
 
 
 class KDEWeightedMSE(nn.Module):
-    def __init__(self, dataset, band_width, mode, standardize=False, eps=1e-6):
+    def __init__(self, dataset, band_width, device, mode='divide', standardize=False, eps=1e-6):
         assert mode in ('divide', 'onemin')
         self.band_width = band_width
         self.mode = mode
         self.standardize = standardize
         self.eps = eps
-        self.device = dataset.device()
-
+        self.device = device
         self.kernel = self._kernel(dataset)
 
     def _kernel(self, dataset):
