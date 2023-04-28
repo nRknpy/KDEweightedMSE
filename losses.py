@@ -12,7 +12,7 @@ class KDEWeightedMSE(nn.Module):
         self.mode = mode
         self.standardize = standardize
         self.eps = eps
-        self.device = dataset.device
+        self.device = dataset.device()
 
         self.kernel = self._kernel(dataset)
 
