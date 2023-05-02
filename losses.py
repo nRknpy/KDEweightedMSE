@@ -20,10 +20,11 @@ class KDEWeightedMSE(nn.Module):
             dataset=dataset, batch_size=128, shuffle=True, drop_last=False)
         x = []
         for data in dataloader:
-            batch, _ = data
-            batch = batch.view(batch.size[0], -1)
+            _, batch = data
+            batch = batch.view(batch.shape[0], -1)
             x.append(batch.cpu().numpy())
         x = np.concatenate(x)
+        print(x.shape)
 
         kernel = KernelDensity(
             kernel='gaussian', bandwidth=self.band_width).fit(x)
