@@ -66,8 +66,5 @@ class KDEWeightedMSESc(nn.Module):
         return loss
     
     def _kernel(self, data):
-        if isinstance(data, pd.DataFrame):
-            data = data.to_numpy().T
-        else:
-            data = np.array(data).T
+        data = np.array(data).T
         return gaussian_kde(data, bw_method=self.band_width)
