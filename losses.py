@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 import numpy as np
+import pandas as pd
 from sklearn.neighbors import KernelDensity
 from scipy.stats import gaussian_kde
 
@@ -64,5 +65,8 @@ class KDEWeightedMSESc(nn.Module):
         return loss
     
     def _kernel(self, data):
-        data = np.array(data).T
+        if isinstance(data, pd.DataFrame):
+            data = data.to_numpy().T
+        else:
+            data = np.array(data).T
         return gaussian_kde(data, bw_method=self.band_width)
