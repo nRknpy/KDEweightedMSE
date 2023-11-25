@@ -42,6 +42,7 @@ class KDEWeightedMSESl(nn.Module):
             loss = torch.mean(torch.dot(1 - f, ((pred - target) ** 2).sum(1)))
         return loss
 
+
 class KDEWeightedMSESc(nn.Module):
     def __init__(self, data, band_width, device, mode='divide', standardize=False, eps=1e-6):
         super(KDEWeightedMSESc, self).__init__()
@@ -53,18 +54,19 @@ class KDEWeightedMSESc(nn.Module):
         self.kernel = self._kernel(data)
         self.standardize = standardize
         if self.standardize:
-            self.f_max = torch.max(torch.tensor(np.array(data).T))
-    
+            self.f_max = torch.max(torch.tensor(self.kernel(np.array(data).T)))
+
     def forward(self, pred, target):
         f = torch.tensor(self.kernel(target.cpu().T))
         if self.standardize:
             f = f / self.f_max
         if self.mode == 'divide':
-            loss = torch.mean(torch.dot(1 / (f + self.eps).float().to(self.device), ((pred - target) ** 2).sum(1)))
+            loss = torch.mean(torch.dot(
+                1 / (f + self.eps).float().to(self.device), ((pred - target) ** 2).sum(1)))
         else:
             loss = torch.mean(torch.dot(1 - f, ((pred - target) ** 2).sum(1)))
         return loss
-    
+
     def _kernel(self, data):
         data = np.array(data).T
         return gaussian_kde(data, bw_method=self.band_width)
